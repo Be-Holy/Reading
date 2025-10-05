@@ -1,12 +1,22 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
+import { LocationStrategy, Location, PathLocationStrategy } from '@angular/common';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+} from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideRouter(routes)
-  ]
+    {
+      provide: Location,
+      useFactory: (locationStrategy: LocationStrategy) => {
+        // Here we ensure the instance is created correctly.
+        return new Location(locationStrategy);
+      },
+      deps: [LocationStrategy]
+    },
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+  ],
 };
