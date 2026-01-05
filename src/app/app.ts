@@ -1,5 +1,6 @@
 import { Component, computed, effect, signal } from '@angular/core';
 import { DecimalPipe, Location } from '@angular/common';
+import { ReadingTrackerComponent } from './reading-tracker.component';
 interface TextMetadata {
   volumes: Array<{
     name: string;
@@ -34,11 +35,11 @@ interface Text {
 
 @Component({
   selector: 'app-root',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, ReadingTrackerComponent],
   template: ` 
     @if (texts(); as texts) {
-      @if (selectedText(); as selectedText) {
-        <h2>{{selectedText.name}}</h2>
+      @if (selectedText(); as selectedTextValue) {
+        <h2>{{selectedTextValue.name}}</h2>
         @if (textMetadata(); as meta) {
           @if (volumes()!.length > 1) {
             <div>{{volumes()!.length | number}} volumes</div>
@@ -56,6 +57,7 @@ interface Text {
             <div>{{words() | number}} words</div>
           }
         }
+        <app-reading-tracker [text]="selectedTextValue" [textMetadata]="textMetadata()" [textId]="selectedTextId()"></app-reading-tracker>
       } @else {
         <ul>
           @for(text of texts; track text.id) { 
